@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-# Define the U-Net backbone
 class UNet(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(UNet, self).__init__()
@@ -75,13 +74,13 @@ class UNet(nn.Module):
 
 # Define the SPE module
 class SPEModule(nn.Module):
-    def __init__(self):
+    def __init__(self, in_channels, out_channels):
         super(SPEModule, self).__init__()
         # Define the three-step processing layers
         self.first_order_pooling = nn.MaxPool2d(kernel_size=2)
         self.second_order_pooling = nn.MaxPool2d(kernel_size=2)
-        self.statistical_fusion = nn.Conv2d(in_channels=..., out_channels=..., kernel_size=...)
-        self.pec = nn.Conv2d(in_channels=..., out_channels=..., kernel_size=...)
+        self.statistical_fusion = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        self.pec = nn.Conv2d(out_channels, out_channels, kernel_size=1)
     
     def forward(self, x):
         # First-order pooling
@@ -103,7 +102,7 @@ class SegLog(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(SegLog, self).__init__()
         self.unet = UNet(in_channels, out_channels)
-        self.spe = SPEModule()
+        self.spe = SPEModule(out_channels, out_channels)
     
     def forward(self, x):
         # Forward pass through U-Net
@@ -116,6 +115,3 @@ class SegLog(nn.Module):
         output = torch.cat((x_unet, x_spe), dim=1)
         
         return output
-
-# Create an instance of the SegLog model
-# seglog_model = SegLog(in_channels, out_channels)
