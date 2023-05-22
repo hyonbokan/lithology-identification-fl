@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-train_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/las_files_Lithostrat_data/train'
-save_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/train'
+train_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/las_files_Lithostrat_data/test'
+save_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/test'
 
-log_curves = ['CALI', 'BS', 'DCAL', 'ROP', 'RDEP', 'RSHA', 'RMED', 'SP', 'DTC', 'NPHI', 'GR', 'RHOB', 'DRHO']
+log_curves = ['CALI', 'BS', 'DCAL', 'ROP', 'RDEP', 'RSHA', 'RMED', 'SP', 'DTS', 'DTC', 'NPHI', 'GR', 'RHOB', 'DRHO']
 
 lithology_keys = {30000: 'Sandstone',
                  65030: 'Sandstone/Shale',
