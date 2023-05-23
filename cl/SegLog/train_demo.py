@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import os
 from model import SegLog, SegLogDataset
-from test_model import SegLog
+from test_model import UNet
 from tqdm import tqdm
 
 # Set device (GPU if available, else CPU)
@@ -64,7 +64,7 @@ def main():
     for inputs, labels in train_loader:
         print(inputs.shape)
 
-    model = SegLog(in_channels, out_channels).to(DEVICE)
+    model = UNet(in_channels, out_channels).to(DEVICE)
     
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
