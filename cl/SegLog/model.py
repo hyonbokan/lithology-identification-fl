@@ -1,5 +1,10 @@
 import torch
 import torch.nn as nn
+from torch.utils.data import Dataset
+from torchvision.transforms import ToTensor
+import os
+import numpy as np
+
 
 class UNet(nn.Module):
     def __init__(self, in_channels, out_channels):
@@ -115,3 +120,22 @@ class SegLog(nn.Module):
         output = torch.cat((x_unet, x_spe), dim=1)
         
         return output
+
+
+class SegLogDataset(Dataset):
+    def __init__(self, x_dir, y_dir):
+        self.x_dir = x_dir
+        self.y_dir = y_dir
+        self.file_names = sorted(os.listdir(x_dir))
+
+    def __len__(self):
+        return len(self.file_names)
+
+    def __getitem__(self, idx):
+        x_file = os.path.join(self.x_dir, self.file_names[idx])
+        y_file = os.path.join(self.y_dir, self.file_names[idx])
+
+        x_data = torch.from_numpy(np.load(x_file).astype(np.float32))
+        y_data = np.load(y_file)
+
+        return x_data, y_data
