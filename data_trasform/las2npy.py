@@ -24,7 +24,6 @@ lithology_numbers = {30000: 0,
                  12345: 12}
 
 
-# Iterate over files in the train directory
 for filename in tqdm(os.listdir(train_dir)):
     if filename.endswith('.las'):
         # Read LAS file
