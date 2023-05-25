@@ -33,6 +33,7 @@ def x_preprocessing(df):
     return X
 
 def df_to_img(X):
+    # Get the total number of depth points (D) and number of log curves (N)
     D = len(X.index.values)
     N = len(X.columns)
     data = X.to_numpy()
@@ -58,13 +59,13 @@ def label_to_img(y):
 
 for filename in tqdm(os.listdir(train_dir)):
     if filename.endswith('.las'):
-        # Read LAS file
         file_path = os.path.join(train_dir, filename)
         print(f'{file_path} is being processed...')
         las = lasio.read(f'{file_path}')
         df = las.df()
         # print(df.columns)
 
+        # Preprocessing the log curve(input) data
         for curve in log_curves:
             if curve not in df.columns:
                 df[curve] = 0
