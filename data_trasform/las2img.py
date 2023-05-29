@@ -63,7 +63,6 @@ for filename in tqdm(os.listdir(train_dir)):
         print(f'{file_path} is being processed...')
         las = lasio.read(f'{file_path}')
         df = las.df()
-        # print(df.columns)
 
         # Preprocessing the log curve(input) data
         for curve in log_curves:
