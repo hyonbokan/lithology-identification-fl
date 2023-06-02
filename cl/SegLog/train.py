@@ -3,8 +3,9 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
+from torchvision import transforms
 import os
-from model import SegLog, SegLogDataset
+from model import SegLog, SegmentationDataset
 from test_model import SegLog
 from tqdm import tqdm
 
@@ -55,9 +56,13 @@ def train(model, train_loader, criterion, optimizer, DEVICE):
 
 # Define the main training loop
 def main():
+    transform = transforms.Compose([
+    transforms.ToTensor()       
+    ])
 
-    train_dataset = SegLogDataset(train_x_dir, train_y_dir)
-    val_dataset = SegLogDataset(val_x_dir, val_y_dir) 
+    train_dataset = SegmentationDataset(train_x_dir, train_y_dir, transform=transform)
+    val_dataset = SegmentationDataset(val_x_dir, val_y_dir, transform=transform)
+
     train_loader = DataLoader(train_dataset, batch_size=BATCH, shuffle=False)
     val_loader = DataLoader(val_dataset, batch_size=BATCH, shuffle=False)
     

@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 from torchvision.transforms import ToTensor
+from PIL import Image
 import os
 import numpy as np
 
@@ -122,20 +123,25 @@ class SegLog(nn.Module):
         return output
 
 
-class SegLogDataset(Dataset):
-    def __init__(self, x_dir, y_dir):
-        self.x_dir = x_dir
-        self.y_dir = y_dir
-        self.file_names = sorted(os.listdir(x_dir))
+class SegmentationDataset(Dataset):
+    def __init__(self, input_dir, label_dir, transform=None):
+        self.input_dir = input_dir
+        self.label_dir = label_dir
+        self.transform = transform
+        self.file_list = sorted(os.listdir(input_dir))
 
     def __len__(self):
-        return len(self.file_names)
+        return len(self.file_list)
 
-    def __getitem__(self, idx):
-        x_file = os.path.join(self.x_dir, self.file_names[idx])
-        y_file = os.path.join(self.y_dir, self.file_names[idx])
+    def __getitem__(self, index):
+        input_path = os.path.join(self.input_dir, self.file_list[index])
+        label_path = os.path.join(self.label_dir, self.file_list[index])
 
-        x_data = torch.from_numpy(np.load(x_file).astype(np.float32))
-        y_data = np.load(y_file)
+        input_image = Image.open(input_path).convert('L')  # Load input image as grayscale
+        label_image = Image.open(label_path).convert('L')  # Load label image as grayscale
 
-        return x_data, y_data
+        if self.transform:
+            input_image = self.transform(input_image)
+            label_image = self.transform(label_image)
+
+        return input_image, label_image
