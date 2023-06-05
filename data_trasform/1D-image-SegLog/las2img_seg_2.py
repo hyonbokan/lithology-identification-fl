@@ -5,8 +5,8 @@ import pandas as pd
 from tqdm import tqdm
 from PIL import Image
 
-train_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/las_files_Lithostrat_data/train'
-save_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_D1N/train'
+train_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/las_files_Lithostrat_data/val'
+save_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_DN1/val'
 
 log_curves = ['CALI', 'BS', 'DCAL', 'ROP', 'RDEP', 'RSHA', 'RMED', 'SP', 'DTS', 'DTC', 'NPHI', 'GR', 'RHOB', 'DRHO']
 
@@ -37,13 +37,7 @@ def df_to_img(X):
     D = len(X.index.values)
     N = len(X.columns)
     data = X.to_numpy()
-    input_tensor = np.reshape(data, (D, 1, N))
-    # Normalize the input tensor
-    mean = np.mean(data)
-    std = np.std(data)
-    input_tensor = (data - mean) / std
-    # Reshape the input tensor
-    input_tensor = np.reshape(input_tensor, (D, N))
+    input_tensor = np.reshape(data, (D, N, 1))
     return input_tensor
 
 def label_to_img(y):
@@ -71,10 +65,10 @@ for filename in tqdm(os.listdir(train_dir)):
     
         X = x_preprocessing(df)
         input_tensor = df_to_img(X)
-
+        input_tensor = (input_tensor * 255).astype(np.uint8)
+        image = Image.fromarray(input_tensor[:, :, 0], mode='L')
         # Convert the input tensor to PIL image
         save_path = os.path.join(save_dir, 'x', f'{os.path.splitext(filename)[0]}.png')
-        image = Image.fromarray(input_tensor.astype(np.uint8), mode='L')
         image.save(save_path)
 
         # Preprocessing labels

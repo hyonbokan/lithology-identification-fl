@@ -17,42 +17,46 @@ out_channels = 13 # number of classes
 BATCH = 1
 
 # Set the paths to train and validation directories
-train_x_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/train/x'
-train_y_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/train/y'
-val_x_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/val/x'
-val_y_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog/val/y'
+train_x_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_DN1/train/x'
+train_y_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_DN1/train/y'
+val_x_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_DN1/val/x'
+val_y_dir = '/media/Data-B/my_research/Geoscience_FL/data_well_log/1D-image-SegLog_DN1/val/y'
 
 
 
-# Define the training function
-def train(model, train_loader, criterion, optimizer, DEVICE):
+def train(model, train_loader, criterion, optimizer, device):
     model.train()
     running_loss = 0.0
     correct = 0
     total = 0
-    
+
     for inputs, labels in train_loader:
-        inputs = inputs.to(DEVICE)
-        labels = labels.to(DEVICE)
-        
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        # Resize the input tensor to match the size of the target tensor
+        inputs = torch.nn.functional.interpolate(inputs, size=(labels.size(2), labels.size(3)), mode='bilinear', align_corners=False)
+
         optimizer.zero_grad()
-        
+
         outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        
+        loss = criterion(outputs, labels.squeeze(1).long())
+
         loss.backward()
         optimizer.step()
-        
+
         running_loss += loss.item()
-        
+
         _, predicted = outputs.max(1)
         total += labels.size(0)
-        correct += predicted.eq(labels).sum().item()
-    
+        correct += predicted.eq(labels.squeeze(1)).sum().item()
+
     train_loss = running_loss / len(train_loader)
     train_acc = 100.0 * correct / total
-    
+
     return train_loss, train_acc
+
+
 
 
 # Define the main training loop
@@ -69,7 +73,8 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=BATCH, shuffle=False)
     
     for inputs, labels in train_loader:
-        print(inputs.shape)
+        print(f'Input shape: {inputs.shape}')
+        print(f'Label shape: {labels.shape}')
 
     model = UNet(in_channels, out_channels).to(DEVICE)
     # model = SegLog(in_channels, out_channels).to(DEVICE)

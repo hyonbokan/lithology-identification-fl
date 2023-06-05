@@ -5,50 +5,33 @@ from PIL import Image
 import torch.nn as nn
 import torch.nn.functional as F
 
+# Define the UNet model
 class UNet(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(UNet, self).__init__()
-
+        
         # Encoder
-        self.encoder_conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, padding=1)
-        self.encoder_relu1 = nn.ReLU()
-        self.encoder_pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.encoder = nn.Sequential(
+            nn.Conv2d(in_channels, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
         
-        self.encoder_conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-        self.encoder_relu2 = nn.ReLU()
-        self.encoder_pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-
-        # Bottleneck
-        self.bottleneck_conv = nn.Conv2d(128, 256, kernel_size=3, padding=1)
-        self.bottleneck_relu = nn.ReLU()
-
         # Decoder
-        self.decoder_upsample1 = nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2)
-        self.decoder_conv1 = nn.Conv2d(256, 128, kernel_size=3, padding=1)
-        self.decoder_relu1 = nn.ReLU()
+        self.decoder = nn.Sequential(
+            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(64, out_channels, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        )
         
-        self.decoder_upsample2 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
-        self.decoder_conv2 = nn.Conv2d(128, 64, kernel_size=3, padding=1)
-        self.decoder_relu2 = nn.ReLU()
-
-        self.decoder_conv3 = nn.Conv2d(64, out_channels, kernel_size=1)
-
     def forward(self, x):
-        # Encoder
-        encoder_out1 = self.encoder_relu1(self.encoder_conv1(x))
-        encoder_out2 = self.encoder_relu2(self.encoder_conv2(self.encoder_pool1(encoder_out1)))
-
-        # Bottleneck
-        bottleneck_out = self.bottleneck_relu(self.bottleneck_conv(self.encoder_pool2(encoder_out2)))
-
-        # Decoder
-        decoder_out1 = self.decoder_relu1(self.decoder_conv1(torch.cat([bottleneck_out, self.decoder_upsample1(bottleneck_out)], dim=1)))
-        decoder_out2 = self.decoder_relu2(self.decoder_conv2(torch.cat([encoder_out2, self.decoder_upsample2(decoder_out1)], dim=1)))
-
-        # Output
-        output = self.decoder_conv3(decoder_out2)
-        return output
-
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
 
 class SegmentationDataset(Dataset):
     def __init__(self, input_dir, label_dir, transform=None):
