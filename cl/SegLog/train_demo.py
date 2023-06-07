@@ -12,8 +12,6 @@ from tqdm import tqdm
 # Set device (GPU if available, else CPU)
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-in_channels = 1 
-out_channels = 13 # number of classes
 BATCH = 1
 
 # Set the paths to train and validation directories
@@ -76,7 +74,7 @@ def main():
         print(f'Input shape: {inputs.shape}')
         print(f'Label shape: {labels.shape}')
 
-    model = UNet(in_channels, out_channels).to(DEVICE)
+    model = UNet(in_channels=1, out_channels=13).to(DEVICE)
     # model = SegLog(in_channels, out_channels).to(DEVICE)
     
     # Define loss function and optimizer
@@ -116,7 +114,7 @@ def main():
 
     
     # Save the trained model
-    torch.save(model.state_dict(), '/saved_model/seglog_test.pt')
+    torch.save(model.state_dict(), '/saved_model/Unet_model_1.pt')
 
 if __name__ == '__main__':
     main()
