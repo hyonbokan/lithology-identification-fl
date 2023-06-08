@@ -6,7 +6,7 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 import os
 from model import SegLog, SegmentationDataset
-from test_model import UNet
+from unet import UNet
 from tqdm import tqdm
 
 # Set device (GPU if available, else CPU)
