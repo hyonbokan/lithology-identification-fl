@@ -6,7 +6,6 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 import os
 from model import SegLog, SegmentationDataset
-from test_model import SegLog
 from tqdm import tqdm
 
 # Set device (GPU if available, else CPU)
@@ -56,6 +55,7 @@ def train(model, train_loader, criterion, optimizer, DEVICE):
 
 # Define the main training loop
 def main():
+    # Figure out the input and output shapes. Loss func 3D, but the model receives 4D;
     transform = transforms.Compose([
     transforms.ToTensor()       
     ])
@@ -67,7 +67,8 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=BATCH, shuffle=False)
     
     for inputs, labels in train_loader:
-        print(inputs.shape)
+        print(f'Input shape: {inputs.shape}')
+        print(f'Label shape: {labels.shape}')
 
     model = SegLog(in_channels, out_channels).to(DEVICE)
     
@@ -75,36 +76,36 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
     
-    # Training loop
-    EPOCHS = 10  # Update with the desired number of training epochs
-    for epoch in tqdm(range(EPOCHS)):
-        print('Train Starts...')
-        train_loss, train_acc = train(model, train_loader, criterion, optimizer, DEVICE)
-        print(f'Epoch {epoch+1}/{EPOCHS}, Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}')
+    # # Training loop
+    # EPOCHS = 10  # Update with the desired number of training epochs
+    # for epoch in tqdm(range(EPOCHS)):
+    #     print('Train Starts...')
+    #     train_loss, train_acc = train(model, train_loader, criterion, optimizer, DEVICE)
+    #     print(f'Epoch {epoch+1}/{EPOCHS}, Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}')
         
-        # Validation
-        model.eval()
-        with torch.no_grad():
-            val_loss = 0.0
-            correct = 0
-            total = 0
+    #     # Validation
+    #     model.eval()
+    #     with torch.no_grad():
+    #         val_loss = 0.0
+    #         correct = 0
+    #         total = 0
             
-            for inputs, labels in val_loader:
-                inputs = inputs.to(DEVICE)
-                labels = labels.to(DEVICE)
+    #         for inputs, labels in val_loader:
+    #             inputs = inputs.to(DEVICE)
+    #             labels = labels.to(DEVICE)
                 
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
+    #             outputs = model(inputs)
+    #             loss = criterion(outputs, labels)
                 
-                val_loss += loss.item()
+    #             val_loss += loss.item()
                 
-                _, predicted = outputs.max(1)
-                total += labels.size(0)
-                correct += predicted.eq(labels).sum().item()
+    #             _, predicted = outputs.max(1)
+    #             total += labels.size(0)
+    #             correct += predicted.eq(labels).sum().item()
             
-            val_loss /= len(val_loader)
-            val_acc = 100.0 * correct / total
-            print(f'Epoch {epoch+1}/{EPOCHS}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.2f}%')
+    #         val_loss /= len(val_loader)
+    #         val_acc = 100.0 * correct / total
+    #         print(f'Epoch {epoch+1}/{EPOCHS}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.2f}%')
 
     
     # Save the trained model
