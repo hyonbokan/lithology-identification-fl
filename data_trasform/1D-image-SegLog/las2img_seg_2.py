@@ -68,7 +68,6 @@ for filename in tqdm(os.listdir(train_dir)):
         input_tensor = df_to_tensor(X)
         input_tensor = (input_tensor * 255).astype(np.uint8)
         image = Image.fromarray(input_tensor[:, :, 0], mode='L')
-        # Convert the input tensor to PIL image
         save_path = os.path.join(save_dir, 'x', f'{os.path.splitext(filename)[0]}.png')
         image.save(save_path)
 
