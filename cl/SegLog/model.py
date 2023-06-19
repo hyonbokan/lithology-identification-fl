@@ -137,8 +137,8 @@ class SegmentationDataset(Dataset):
         input_path = os.path.join(self.input_dir, self.file_list[index])
         label_path = os.path.join(self.label_dir, self.file_list[index])
 
-        input_image = Image.open(input_path).convert('L')  # Load input image as grayscale
-        label_image = Image.open(label_path).convert('L')  # Load label image as grayscale
+        input_image = Image.open(input_path).convert('L')
+        label_image = Image.open(label_path).convert('L')
 
         if self.transform:
             input_image = self.transform(input_image)

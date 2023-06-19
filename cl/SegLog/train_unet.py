@@ -75,7 +75,6 @@ def main():
         print(f'Label shape: {labels.shape}')
 
     model = UNet(in_channels=1, out_channels=13).to(DEVICE)
-    # model = SegLog(in_channels, out_channels).to(DEVICE)
     
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
