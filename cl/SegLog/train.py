@@ -76,6 +76,8 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.0001)
     
+    # Classification using segmentation - classification was found to be highly inaccurate, and thus the experiment was forfeited;
+
     # # Training loop
     # EPOCHS = 10  # Update with the desired number of training epochs
     # for epoch in tqdm(range(EPOCHS)):

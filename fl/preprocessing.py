@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.metrics import accuracy_score, f1_score
 
 # loading saved penalty matrix
 A = np.load('penalty_matrix.npy')
@@ -105,8 +106,25 @@ def score(y_true, y_pred):
         S -= A[y_true[i], y_pred[i]]
     return S/y_true.shape[0]
 
+def show_evaluation(pred, true):
 
-def preprocess(self, train, test):
+  '''
+
+  function to show model performance and evaluation
+  args:
+    pred: predicted value(a list)
+    true: actual values (a list)
+
+  prints the custom metric performance, accuracy and F1 score of predictions
+
+  '''
+
+  print(f'Default score: {score(true.values, pred)}')
+  print(f'Accuracy is: {accuracy_score(true, pred)}')
+  print(f'F1 is: {f1_score(pred, true.values, average="weighted")}')
+
+
+def preprocess(train, test):
 
         '''
         method to prepare datasets for training and predictions
