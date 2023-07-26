@@ -123,103 +123,36 @@ def show_evaluation(pred, true):
   print(f'Accuracy is: {accuracy_score(true, pred)}')
   print(f'F1 is: {f1_score(pred, true.values, average="weighted")}')
 
-
-def preprocess(train, test):
-
-        '''
-        method to prepare datasets for training and predictions
-        accepts both the train and test dataframes as arguments
-
-        returns the prepared train, test datasets along with the
-        lithology labels and numbers which is needed for preparing
-        the submission file
-
-        '''
-
-        #concatenating both train and test datasets for easier and uniform processing
-
-        ntrain = train.shape[0]
-        ntest = test.shape[0]
-        target = train.FORCE_2020_LITHOFACIES_LITHOLOGY.copy()
-        df = pd.concat((train, test)).reset_index(drop=True)
-
-        #mapping the lithology labels to ordinal values for better modelling
-
-        lithology = train['FORCE_2020_LITHOFACIES_LITHOLOGY']
- 
-        lithology_numbers = {30000: 0,
-                        65030: 1,
-                        65000: 2,
-                        80000: 3,
-                        74000: 4,
-                        70000: 5,
-                        70032: 6,
-                        88000: 7,
-                        86000: 8,
-                        99000: 9,
-                        90000: 10,
-                        93000: 11}
+def preprocess(df):
         
-        lithology1 = lithology.map(lithology_numbers)
+    df_well = df.WELL.values
+    df_depth = df.DEPTH_MD.values
 
-        #implementing Bestagini's augmentation procedure
+    print(f"Shape of concatenated dataframe before dropping columns: {df.shape}")
 
-        train_well = train.WELL.values
-        train_depth = train.DEPTH_MD.values
-        
-        test_well = test.WELL.values
-        test_depth = test.DEPTH_MD.values  
-        '''to be continued...
-        #this was done here for ease as the datasets would undergo some transformations
-        #that would make it uneasy to perform the augmentation technique'''
+    cols_to_drop = ['SGR', 'DTS', 'RXO', 'ROPA', 'FORCE_2020_LITHOFACIES_LITHOLOGY', 'FORCE_2020_LITHOFACIES_CONFIDENCE']
+    df = df.drop(columns=cols_to_drop, errors='ignore')
 
-        
-
-        print(f'shape of concatenated dataframe before dropping columns {df.shape}')
-
-        cols = ['FORCE_2020_LITHOFACIES_CONFIDENCE', 'SGR', 'DTS', 'RXO', 'ROPA'] #columns to be dropped
-        df = drop_columns(df, *cols)
-        print(f'shape of dataframe after dropping columns {df.shape}')
-        print(f'{cols} were dropped')
-
-        #Label encoding the GROUP, FORMATION and WELLS features as these improved the performance of the models on validations
-
-        df['GROUP_encoded'] = df['GROUP'].astype('category')
-        df['GROUP_encoded'] = df['GROUP_encoded'].cat.codes 
-        df['FORMATION_encoded'] = df['FORMATION'].astype('category')
-        df['FORMATION_encoded'] = df['FORMATION_encoded'].cat.codes
-        df['WELL_encoded'] = df['WELL'].astype('category')
-        df['WELL_encoded'] = df['WELL_encoded'].cat.codes
-        print(f'shape of dataframe after label encoding columns {df.shape}')
-
-
-        #FURTHER PREPRATION TO SPLIT DATAFRAME INTO TRAIN AND TEST DATASETS AFTER PREPRATION
-        print(f'Splitting concatenated dataframe into training and test datasets...')
-        df = df.drop(['WELL', 'GROUP', 'FORMATION'], axis=1)
-        print(df.shape)
-        
-        df = df.fillna(-999)
-        df = process(df)
-        data = df.copy()
-
-        print(f'dataframe columns: {data.columns}')
-        
-        train2 = data[:ntrain].copy()
-        train2.drop(['FORCE_2020_LITHOFACIES_LITHOLOGY'], axis=1, inplace=True)
-        
-        test2 = data[ntrain:(ntest+ntrain)].copy()
-        test2.drop(['FORCE_2020_LITHOFACIES_LITHOLOGY'], axis=1, inplace=True)
-        test2 = test2.reset_index(drop=True)
-
-        traindata = train2
-        testdata = test2
-
-        print(f'Shape of train and test datasets BEFORE augmentation {traindata.shape, testdata.shape}')
- 
-        traindata1, padded_rows = augment_features(pd.DataFrame(traindata).values, train_well, train_depth)
-        testdata1, padded_rows = augment_features(pd.DataFrame(testdata).values, test_well, test_depth)
-        
-
-        print(f'Shape of train and test datasets AFTER augmentation {traindata1.shape, testdata1.shape}')
+    print(f"Shape of dataframe after dropping columns: {df.shape}")
     
-        return traindata1, testdata1, lithology1, lithology_numbers
+    # Label encoding the GROUP, FORMATION, and WELLS features
+    df['GROUP_encoded'] = df['GROUP'].astype('category').cat.codes
+    df['FORMATION_encoded'] = df['FORMATION'].astype('category').cat.codes
+    df['WELL_encoded'] = df['WELL'].astype('category').cat.codes
+    print(f"Shape of dataframe after label encoding columns: {df.shape}")
+
+    # Further preparation to split dataframe into train and test datasets after preparation
+    df = df.drop(['WELL', 'GROUP', 'FORMATION'], axis=1)
+
+    df = df.fillna(-999)
+    df = process(df)
+
+    print(f"Dataframe columns: {df.columns}")
+    print(f"Shape of the dataset BEFORE augmentation: {df.shape}")
+
+    augmented_df, _ = augment_features(pd.DataFrame(df).values, df_well, df_depth)
+
+    print(f"Shape of the dataset AFTER augmentation: {augmented_df.shape}")
+
+    return augmented_df
+

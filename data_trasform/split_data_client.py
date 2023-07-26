@@ -35,19 +35,14 @@ for i in range(num_clients):
 test_clients = []
 start_index = 0
 for i in range(num_clients):
-    # Calculate the end index for the current client
     end_index = start_index + test_wells_per_client if i < num_clients - 1 else len(unique_test_wells)
     
-    # Get the well names for the current client
     client_test_wells = unique_test_wells[start_index:end_index]
     
-    # Filter the test DataFrame for the current client
     client_test_df = test[test['WELL'].isin(client_test_wells)]
     
-    # Append the client test DataFrame to the list
     test_clients.append(client_test_df)
     
-    # Update the start index for the next client
     start_index = end_index
 
 if not os.path.exists(save_dir):
