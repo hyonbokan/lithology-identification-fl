@@ -1,0 +1,91 @@
+{'accuracy': [(0, tensor(0.0726)), (1, tensor(0.7161)), (2, tensor(0.7340)), (3, tensor(0.7259)), (4, tensor(0.7265)), (5, tensor(0.7115)), (6, tensor(0.7336)), (7, tensor(0.7123)), (8, tensor(0.7193)), (9, tensor(0.7235)), (10, tensor(0.7252)), (11, tensor(0.7118)), (12, tensor(0.7187)), (13, tensor(0.7331)), (14, tensor(0.7244)), (15, tensor(0.7380)), (16, tensor(0.7222)), (17, tensor(0.7225)), (18, tensor(0.7180)), (19, tensor(0.7208)), (20, tensor(0.7223))]}
+start_experiment(
+    task_type='MULTICLASS',
+    trainset=trainset,
+    testset=testset,
+    num_rounds=20,
+    client_tree_num=client_tree_num,
+    client_pool_size=client_num,
+    num_iterations=100,
+    batch_size=54,
+    fraction_fit=1.0,
+    min_fit_clients=1,
+)
+
+
+
+
+
+start_experiment(
+    task_type='MULTICLASS',
+    trainset=trainset,
+    testset=testset,
+    num_rounds=10,
+    client_tree_num=client_tree_num,
+    client_pool_size=client_num,
+    num_iterations=100,
+    batch_size=32,
+    fraction_fit=1.0,
+    min_fit_clients=1,
+)
+
+ dataset: Dataset, label: NDArray, n_estimators, tree_type: str, learning_rate=0.01, max_depth=100, booster='gbtree',random_state=0, subsample=0.9,
+    colsample_bytree=0.9, alpha=5, gamma=5, min_child_weight=1, eval_metric='mlogloss', reg_lambda=1500, verbose=2020, max_leaves=100
+) -> Union[XGBClassifier, XGBRegressor]:
+
+{'accuracy': [(0, tensor(0.5574)), (1, tensor(0.7099)), (2, tensor(0.6866)), (3, tensor(0.6915)), (4, tensor(0.7047)), (5, tensor(0.6924)), (6, tensor(0.6972)), (7, tensor(0.7058)), (8, tensor(0.7200)), (9, tensor(0.6664)), (10, tensor(0.7034))]}
+
+
+
+
+test 3:
+
+dataset: Dataset, label: NDArray, n_estimators, tree_type: str, learning_rate=0.1, max_depth=30, booster='gbtree',random_state=0, subsample=0.9,
+    colsample_bytree=0.9, alpha=5, gamma=5, min_child_weight=1, eval_metric='mlogloss', reg_lambda=1500, verbose=2020, max_leaves=30
+) -> Union[XGBClassifier, XGBRegressor]:
+
+start_experiment(
+    task_type='MULTICLASS',
+    trainset=trainset,
+    testset=testset,
+    num_rounds=10,
+    client_tree_num=client_tree_num,
+    client_pool_size=client_num,
+    num_iterations=100,
+    batch_size=64,
+    fraction_fit=1.0,
+    min_fit_clients=1,
+)
+
+
+Evaluation on the server: test_loss=0.0298, test_accuracy=0.7156
+Evaluation on the server: test_loss=0.0296, test_accuracy=0.7332
+Evaluation on the server: test_loss=0.0298, test_accuracy=0.7156
+
+
+test 4:
+
+    # Inital 'dataset' was Dataset of pytorch
+    dataset: Dataset, label: NDArray, n_estimators, tree_type: str, learning_rate=0.05, max_depth=30, booster='gbtree',random_state=0, subsample=0.9,
+    colsample_bytree=0.9, alpha=5, gamma=5, min_child_weight=1, eval_metric='mlogloss', reg_lambda=1500, verbose=2020, max_leaves=30
+) -> Union[XGBClassifier, XGBRegressor]:
+
+
+start_experiment(
+    task_type='MULTICLASS',
+    trainset=trainset,
+    testset=testset,
+    num_rounds=10,
+    client_tree_num=client_tree_num,
+    client_pool_size=client_num,
+    num_iterations=150,
+    batch_size=64,
+    fraction_fit=1.0,
+    min_fit_clients=1,
+)
+
+
+Evaluation on the server: test_loss=0.0398, test_accuracy=0.0097
+Evaluation on the server: test_loss=0.0294, test_accuracy=0.7425
+Evaluation on the server: test_loss=0.0295, test_accuracy=0.7317
+Evaluation on the server: test_loss=0.0294, test_accuracy=0.7409
