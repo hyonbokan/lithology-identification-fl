@@ -7,7 +7,7 @@ start_experiment(
     client_tree_num=client_tree_num,
     client_pool_size=client_num,
     num_iterations=100,
-    batch_size=54,
+    batch_size=64,
     fraction_fit=1.0,
     min_fit_clients=1,
 )
@@ -89,3 +89,6 @@ Evaluation on the server: test_loss=0.0398, test_accuracy=0.0097
 Evaluation on the server: test_loss=0.0294, test_accuracy=0.7425
 Evaluation on the server: test_loss=0.0295, test_accuracy=0.7317
 Evaluation on the server: test_loss=0.0294, test_accuracy=0.7409
+test_loss=0.0295, test_accuracy=0.7303
+
+test 5:
