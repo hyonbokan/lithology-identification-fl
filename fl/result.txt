@@ -64,6 +64,7 @@ Evaluation on the server: test_loss=0.0298, test_accuracy=0.7156
 
 
 test 4:
+client_tree_num = 300 // client_num
 
     # Inital 'dataset' was Dataset of pytorch
     dataset: Dataset, label: NDArray, n_estimators, tree_type: str, learning_rate=0.05, max_depth=30, booster='gbtree',random_state=0, subsample=0.9,
@@ -92,3 +93,24 @@ Evaluation on the server: test_loss=0.0294, test_accuracy=0.7409
 test_loss=0.0295, test_accuracy=0.7303
 
 test 5:
+
+
+client_tree_num = 600 // client_num
+
+ Inital 'dataset' was Dataset of pytorch
+    dataset: Dataset, label: NDArray, n_estimators, tree_type: str, learning_rate=0.05, max_depth=30, booster='gbtree',random_state=0, subsample=0.9,
+    colsample_bytree=0.9, alpha=5, gamma=5, min_child_weight=1, eval_metric='mlogloss', reg_lambda=1500, verbose=2020, max_leaves=30
+) -> Union[XGBClassifier, XGBRegressor]:
+
+start_experiment(
+    task_type='MULTICLASS',
+    trainset=trainset,
+    testset=testset,
+    num_rounds=10,
+    client_tree_num=client_tree_num,
+    client_pool_size=client_num,
+    num_iterations=150,
+    batch_size=64,
+    fraction_fit=1.0,
+    min_fit_clients=1,
+)
