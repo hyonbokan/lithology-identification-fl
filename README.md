@@ -1,6 +1,9 @@
 # Lithology Identification with Federated Learning
 
-This repository contains the implementation of a Federated Learning approach for lithology identification using the FORCE 2020 Lithology Competition Dataset. The project leverages the Flower framework for Federated Learning and XGBoost for multi-class classification.
+This repository contains the implementation of a Federated Learning approach for lithology identification using the [FORCE 2020 Lithology Competition Dataset](https://www.sodir.no/globalassets/2-force/2020/seminars/contest-machine-learning/blog-post-litho-facies-competition-geological-summary.pdf). The project leverages the Flower framework for Federated Learning and XGBoost for multi-class classification.
+
+### `Important Warning`
+The federated learning code with Flower in this repository is deprecated. The framework has completely reworked the code base. Viewers should follow the new tutorial available at [Flower Quickstart Tutorial with XGBoost](https://flower.ai/docs/framework/tutorial-quickstart-xgboost.html).
 
 ## Introduction
 
